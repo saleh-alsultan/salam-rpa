@@ -1,0 +1,15 @@
+{
+  "name": "salam-rpa-server",
+  "version": "1.0.0",
+  "description": "Salam RPA Tracker backend server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}
