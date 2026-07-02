@@ -9,8 +9,7 @@
 <style>
 :root{--primary:#003831;--primary-dark:#002520;--accent:#33605A;--bg:#f0f2f5;--card:#fff;--text:#222;--text-sec:#555;--text-light:#fff;--border:#d0d0d0;--green:#00B050;--blue:#0070C0;--amber:#FFC000;--red:#C00000;--gray:#808080;--radius:8px;--shadow:0 2px 8px rgba(0,0,0,0.08)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.4}
-.container{max-width:1400px;margin:0 auto;width:100%;padding:16px;min-height:100vh}
+body{font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.4;padding:16px}
 .header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:var(--text-light);padding:16px 24px;border-radius:var(--radius);margin-bottom:14px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
 .logo-text{height:38px;width:auto;display:block}
 .header-right{text-align:left}
@@ -108,7 +107,7 @@ body{padding:4px;font-size:11px}.header{padding:8px 10px}.header-right h1{font-s
 @media print{body{padding:0;background:#fff}.table-wrap{overflow:visible}.header{break-inside:avoid;border-radius:0;margin:0;padding:14px 20px}.section{break-inside:avoid;box-shadow:none;border:1px solid #ddd}.summary-bar,.kpi-mini-grid{break-inside:avoid}.kpi-card,.kpi-mini,.summary-bar,.summary-total,.summary-item,.dept-item,.sb-production,.sb-onhold,.sb-scopedforautomation,.sb-uat,.sb-pddinprogress,.sb-environmentpreparation,.sb-development,.sb-delivered,.sb-analysis,.sb-dropped,.sb,select.rs-inprogress,select.rs-onhold,select.rs-delivered,select.rs-closed,.pbar .fl{-webkit-print-color-adjust:exact;print-color-adjust:exact}.dash-grid{break-inside:avoid;grid-template-columns:1fr 1fr}.ch-box{height:160px}
 </style>
 </head>
-<body><div class="container"><div id="errBox" style="background:#fdd;color:#a00;padding:8px;margin:8px;border:1px solid #a00;border-radius:4px;font-family:monospace;font-size:12px;white-space:pre-wrap;display:none"></div>
+<body><div id="errBox" style="background:#fdd;color:#a00;padding:8px;margin:8px;border:1px solid #a00;border-radius:4px;font-family:monospace;font-size:12px;white-space:pre-wrap;display:none"></div>
 <script>
 // Catch all errors and display them
 window.onerror = function(msg, url, line, col, err) {
@@ -674,7 +673,6 @@ function renderChart(){
   }catch(e){console.error('init:',e)}
 }document.addEventListener('DOMContentLoaded',function(){init()});
 </script>
-</div>
 </body>
 </html>
 
