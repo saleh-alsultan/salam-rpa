@@ -520,7 +520,7 @@ function renderDash(){
 
   const snapsReversed=[...snaps].reverse();
   let kpiHtml='<table><tr><th>Week</th><th>Period</th><th>Analysis</th><th>Scoped</th><th>PDD</th><th>Env Prep</th><th>Development</th><th>UAT</th><th>Production</th><th>Delivered</th><th>On Hold</th><th>Dropped</th><th>%</th></tr>';
-  snapsReversed.forEach((s,i)=>{
+  snapsReversed.slice(3).forEach((s,i)=>{
     const p=i<snapsReversed.length-1?snapsReversed[i+1]:null;
     const d=(f)=>{
       if(!p)return'';
