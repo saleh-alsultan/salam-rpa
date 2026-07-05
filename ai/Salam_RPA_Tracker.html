@@ -575,6 +575,7 @@ function renderDash(){
   if(!allHtml){document.getElementById('changesLog').innerHTML='<div style="padding:6px 0;font-size:12px;color:var(--text-sec)">📭 No changes.</div>';return}
   document.getElementById('changesLog').innerHTML=allHtml;
 
+  renderSummary();
   if(document.getElementById('tab-dashboard').classList.contains('active'))renderChart();
 }
 
