@@ -375,7 +375,7 @@ function renderSummary(){
   STATUSES.forEach(s=>{counts[s]=processes.filter(p=>p.status===s).length});
   const c={Analysis:'#856404','Scoped for Automation':'#0c5460','PDD In Progress':'#856404','PDD In Progress (Part 1)':'#856404','Environment Preparation':'#563d7c',Development:'var(--green)',UAT:'#17a2b8',Production:'var(--blue)',Delivered:'var(--gray)','On Hold':'var(--amber)',Dropped:'var(--red)',Hypercare:'#17a2b8',Discovery:'#856404','Follow-Up':'#856404'};
   let html=`<div class="summary-total">Total <span class="count">${total}</span></div>`;
-  STATUSES.forEach(s=>{if(counts[s]>0)html+=`<div class="summary-item" style="background:${c[s]||'#eee'}22;color:${c[s]||'var(--text)'};border:1px solid ${c[s]||'#eee'}44"><span class="count">${counts[s]}</span>${s}</div>`});
+  STATUSES.forEach(s=>{html+=`<div class="summary-item" style="background:${c[s]||'#eee'}22;color:${c[s]||'var(--text)'};border:1px solid ${c[s]||'#eee'}44"><span class="count">${counts[s]||0}</span>${s}</div>`});
   document.getElementById('summaryBar').innerHTML=html;
 }
 
