@@ -259,10 +259,14 @@ async function loadState() {
   if (SB_ENABLED) {
     try {
       var sb = getSupabase();
-      var c = await sb.from('config').select('week,period,preparedBy').eq('id',1).maybeSingle();
-      if (c.data && c.data.week) { state.week = c.data.week; state.period = c.data.period || ''; state.preparedBy = c.data.preparedBy || ''; }
+      var c = await sb.from('config').select('week,period,preparedby').eq('id',1).maybeSingle();
+      if (c.data && c.data.week) { state.week = c.data.week; state.period = c.data.period || ''; state.preparedBy = c.data.preparedby || ''; }
       var p = await sb.from('processes').select('*').order('sort_order');
-      if (p.data && p.data.length > 0) state.processes = p.data;
+      if (p.data && p.data.length > 0) {
+        state.processes = p.data.map(function(x) {
+          return { dept: x.dept, contact: x.contact, name: x.name, session: x.session, systems: x.systems, desc: x.desc, assess: x.assess, assessReason: x.assessreason, reviewStatus: x.reviewstatus || 'Under Review', status: x.status, blockers: x.blockers, nextSteps: x.nextsteps, meeting: x.meeting, notes: x.notes };
+        });
+      }
       var sn = await sb.from('snapshots').select('*').order('id');
       if (sn.data && sn.data.length > 0) {
         state.snapshots = sn.data.map(function(s) {
@@ -318,11 +322,11 @@ async function saveState() {
   if (dataMode === 'supabase') {
     try {
       var sb = getSupabase();
-      await sb.from('config').upsert({ id: 1, week: state.week, period: state.period, preparedBy: state.preparedBy }, { onConflict: 'id' });
+      await sb.from('config').upsert({ id: 1, week: state.week, period: state.period, preparedby: state.preparedBy }, { onConflict: 'id' });
       await sb.from('processes').delete().neq('id', 0);
       if (state.processes && state.processes.length > 0) {
         await sb.from('processes').insert(state.processes.map(function(p, i) {
-          return { dept: p.dept || '', contact: p.contact || '', name: p.name || '', session: p.session || '', systems: p.systems || '', desc: p.desc || '', assess: p.assess || '', assessReason: p.assessReason || '', reviewStatus: p.reviewStatus || 'Under Review', status: p.status || 'Analysis', blockers: p.blockers || '', nextSteps: p.nextSteps || '', meeting: p.meeting || '', notes: p.notes || '', sort_order: i };
+          return { dept: p.dept || '', contact: p.contact || '', name: p.name || '', session: p.session || '', systems: p.systems || '', desc: p.desc || '', assess: p.assess || '', assessreason: p.assessReason || '', reviewstatus: p.reviewStatus || 'Under Review', status: p.status || 'Analysis', blockers: p.blockers || '', nextsteps: p.nextSteps || '', meeting: p.meeting || '', notes: p.notes || '', sort_order: i };
         }));
       }
       await sb.from('snapshots').delete().neq('id', 0);
