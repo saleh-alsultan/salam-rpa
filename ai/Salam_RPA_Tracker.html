@@ -308,6 +308,12 @@ async function loadState() {
     dataMode = 'local';
   }
 
+  // Use snapshot processes for current week if available
+  var curSnap=state.snapshots.find(function(s){return s.week===state.week});
+  if(curSnap&&curSnap.processes&&curSnap.processes.length>0){
+    state.processes=JSON.parse(JSON.stringify(curSnap.processes));
+  }
+
   state.processes.forEach(function(p) { if (!p.reviewStatus) p.reviewStatus = 'Under Review'; });
 }
 
@@ -316,6 +322,15 @@ async function saveState() {
     state.week = document.getElementById('weekNum').value;
     state.period = document.getElementById('period').value;
     state.preparedBy = document.getElementById('preparedBy').value;
+  }
+
+  // Update current week's snapshot with latest processes
+  if(state&&state.processes){
+    var snap={week:state.week,period:state.period,processes:JSON.parse(JSON.stringify(state.processes)),kpi:{}};
+    STATUSES.forEach(function(s){snap.kpi[s]=state.processes.filter(function(p){return p.status===s}).length});
+    var si=state.snapshots.findIndex(function(s){return s.week===snap.week});
+    if(si>=0)state.snapshots[si]=snap;
+    else state.snapshots.push(snap);
   }
 
   // Supabase
@@ -434,9 +449,32 @@ async function resetWeek(){
 async function takeSnapshot(){
   const entry={week:state.week,period:state.period,processes:JSON.parse(JSON.stringify(state.processes)),kpi:{}};
   STATUSES.forEach(s=>{entry.kpi[s]=state.processes.filter(p=>p.status===s).length});
-  if(state.snapshots.length>0&&state.snapshots[state.snapshots.length-1].week===entry.week)state.snapshots[state.snapshots.length-1]=entry;
+  var idx=state.snapshots.findIndex(function(s){return s.week===entry.week});
+  if(idx>=0)state.snapshots[idx]=entry;
   else state.snapshots.push(entry);
   await saveState();
+  renderDash();
+}
+
+async function changeWeek(newWeek){
+  if(!newWeek||newWeek===state.week)return;
+  // Save current week's snapshot
+  await takeSnapshot();
+  // Look for existing snapshot for the new week
+  state.week=newWeek;
+  var snap=state.snapshots.find(function(s){return s.week===newWeek});
+  if(snap){
+    state.processes=JSON.parse(JSON.stringify(snap.processes));
+    state.period=snap.period||'';
+  } else {
+    // Copy processes from previous week
+    var prevSnap=state.snapshots[state.snapshots.length-1];
+    if(prevSnap)state.processes=JSON.parse(JSON.stringify(prevSnap.processes));
+    state.period='';
+  }
+  document.getElementById('period').value=state.period;
+  await saveState();
+  render();
   renderDash();
 }
 
@@ -671,8 +709,9 @@ function renderChart(){
         if(this.dataset.tab==='dashboard')renderDash();
       });
     });
-    const metaInputs=document.querySelectorAll('.meta input');
-    metaInputs.forEach(inp=>{inp.addEventListener('input',function(){saveState()})});
+    document.getElementById('weekNum').addEventListener('change',function(){changeWeek(this.value)});
+    document.getElementById('period').addEventListener('input',function(){saveState()});
+    document.getElementById('preparedBy').addEventListener('input',function(){saveState()});
     if(state.snapshots.length===0)takeSnapshot();
   }catch(e){console.error('init:',e)}
 }document.addEventListener('DOMContentLoaded',function(){init()});
