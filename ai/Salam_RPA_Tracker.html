@@ -637,6 +637,9 @@ function fillSnapGaps(){
   }
   state.snapshots.sort(function(a,b){return(parseInt(a.week)||0)-(parseInt(b.week)||0)});
 }
+function fillSnapPeriods(){
+  state.snapshots.forEach(function(s){if(!s.period)s.period=calcPeriod(s.week)});
+}
 function renderChart(){
   var canvas=document.getElementById('trendChart');
   if(!canvas)return;
@@ -714,6 +717,7 @@ function renderChart(){
     await loadState();
     restoreMeta();
     fillSnapGaps();
+    fillSnapPeriods();
     await saveState();
     var ds=document.getElementById('dbStatus');
     if(ds)ds.textContent=dataMode==='supabase'?'☁️ Supabase':dataMode==='server'?'🗄️ Server':'💻 Local';
