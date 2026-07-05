@@ -371,11 +371,11 @@ function esc(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 function renderSummary(){
   const processes=state.processes;
   const total=processes.length;
-  const inProg=processes.filter(function(p){return p.status!=='On Hold'&&p.status!=='Dropped'&&p.status!=='Delivered'&&p.status!=='Production'}).length;
-  const onHold=processes.filter(function(p){return p.status==='On Hold'}).length;
+  const counts={};
+  STATUSES.forEach(function(s){counts[s]=processes.filter(function(p){return p.status===s}).length});
+  const c={Analysis:'#856404','Scoped for Automation':'#0c5460','PDD In Progress':'#856404','PDD In Progress (Part 1)':'#856404','Environment Preparation':'#563d7c',Development:'var(--green)',UAT:'#17a2b8',Production:'var(--blue)',Delivered:'var(--gray)','On Hold':'var(--amber)',Dropped:'var(--red)',Hypercare:'#17a2b8',Discovery:'#856404','Follow-Up':'#856404'};
   let html=`<div class="summary-total">Total <span class="count">${total}</span></div>`;
-  html+=`<div class="summary-item" style="background:var(--blue)22;color:var(--blue);border:1px solid var(--blue)44"><span class="count">${inProg}</span>In Progress</div>`;
-  html+=`<div class="summary-item" style="background:var(--amber)22;color:var(--amber);border:1px solid var(--amber)44"><span class="count">${onHold}</span>On Hold</div>`;
+  STATUSES.forEach(function(s){html+=`<div class="summary-item" style="background:${c[s]||'#eee'}22;color:${c[s]||'var(--text)'};border:1px solid ${c[s]||'#eee'}44"><span class="count">${counts[s]||0}</span>${s}</div>`});
   document.getElementById('summaryBar').innerHTML=html;
 }
 
